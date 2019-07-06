@@ -1,0 +1,24 @@
+@inherits LayoutComponentBase
+<!--
+Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
+See license.txt in the ConfectionCountry distribution or repository for the
+full text of the license.
+-->
+
+<div class="cardPileContainerContainer">
+    <div class="cardPileContainer">
+        <div id="@ButtonId" @onclick="@HandleClick" class="cardPile btn btn-outline-primary">@ChildContent</div>
+    </div>
+</div>
+
+@code {
+[Parameter] string ButtonId { get; set; }
+[Parameter] EventCallback OnClick { get; set; }
+[Parameter] RenderFragment ChildContent { get; set; }
+
+public void HandleClick()
+{
+    OnClick.InvokeAsync(null);
+    StateHasChanged();
+}
+}

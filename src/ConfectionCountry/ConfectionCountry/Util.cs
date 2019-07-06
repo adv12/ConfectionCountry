@@ -4,8 +4,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ConfectionCountry
 {
@@ -64,6 +64,61 @@ namespace ConfectionCountry
                 default:
                     return "pink";
             }
+        }
+
+        public static string GetName(SpecialSpace space)
+        {
+            return GetName(space.Type);
+        }
+
+        public static string GetName(SpaceType type)
+        {
+            return Enum.GetName(typeof(SpaceType), type);
+        }
+
+        public static string GetNameWithSpaces(SpaceType type)
+        {
+            string name = GetName(type);
+            StringBuilder sb = new StringBuilder();
+            sb.Append(name[0]);
+            for (int i = 1; i < name.Length; i++)
+            {
+                char cur = name[i];
+                if (char.IsUpper(cur))
+                {
+                    sb.Append(' ');
+                }
+                sb.Append(cur);
+            }
+            return sb.ToString();
+        }
+
+        public static string GetNameAbbreviation(SpecialSpace space)
+        {
+            return GetNameAbbreviation(space.Type);
+        }
+
+        public static string GetNameAbbreviation(SpaceType type)
+        {
+            string name = GetName(type);
+            return Regex.Replace(name, "[a-z]", "");
+        }
+
+        private static SpaceType[] _colors = new SpaceType[] {
+            // This is game board order; do not change!
+            SpaceType.Red,
+            SpaceType.Purple,
+            SpaceType.Yellow,
+            SpaceType.Blue,
+            SpaceType.Orange,
+            SpaceType.Green
+        };
+
+        public static SpaceType[] Colors => _colors;
+
+        public static bool IsColor(SpaceType type)
+        {
+            return Array.IndexOf(_colors, type) > -1;
         }
     }
 }

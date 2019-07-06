@@ -1,3 +1,5 @@
+@using System
+
 <!--
 Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
 See license.txt in the ConfectionCountry distribution or repository for the
@@ -7,50 +9,94 @@ full text of the license.
     Player nextPlayer = Game.NextNonSkippedPlayer;
     SpaceType[] spaces = Game.Spaces;
     Player winner = Game.Winner;
+    SpecialSpace space;
+    Pass pass;
 }
 
     <div class="gameUI">
         @if (!Game.GameOver)
-        {
+{
             <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
-        }
-        else
-        {
+}
+else
+{
             <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
-        }
+}
         <div class="boardContainerContainer">
             <div class="boardContainer">
                 <div class="board">
                     @for (int i = 11; i >= 0; i--)
                     {
-                        bool odd = ((i + 1) % 2 > 0);
+                        bool odd = ((i + 1) % 2 > 0); // treat 0th row as row 1 for this purpose
                         for (int j = 0; j < 12; j++)
                         {
                             int index = 12 * i + (odd ? j : 12 - 1 - j);
-                            <div id="space@(index)" style="order: @(143 - index));"
-                                 class="space @(index <= 133 ? Util.GetColorClass(spaces[index]) : "")">@(index <= 133 ? index.ToString() : "")</div>
-                            }
+                            string colorClass = index <= 133 ? Util.GetColorClass(spaces[index]) : "";
+                            <div id="space@(index)"
+                                 class="space @(colorClass)">
+                                @if (Game.IsSpecialSpace(index, out space))
+                                {
+                                    @(Util.GetNameAbbreviation(space))
+                                }
+                                @if (Game.IsLicorice(index))
+                                {
+                                    <text>X</text>
+                                }
+                                @if (Game.HasPass(index, out pass))
+                                {
+                                    @(odd ? ">>" : "&lt;&lt;")
+                                }
+                                @if (index <= 133 && ((!odd && j == 0) || (odd && j == 11)))
+                                {
+                                    <text>^</text>
+                                }
+                                @for (int p = 0; p < Game.Players.Count; p++)
+                                {
+                                    Player player = Game.Players[p];
+                                    int position = Game.PlayerPositions[p];
+                                    if (Game.CurrentTurn != null && _animating && player == Game.CurrentTurn.Player)
+                                    {
+                                        position = _animatedPosition;
+                                    }
+                                    if (position == index)
+                                    {
+                                        <div class="player player@(p + 1) @(Util.GetBootstrapClasses(player.Color))"></div>
+                                    }
+                                }
+                            </div>
                         }
+                    }
                 </div>
             </div>
         </div>
         <div class="bottomRow">
-            <div class="cardPileContainerContainer">
-                <div class="cardPileContainer">
-                    <button id="deck" class="cardPile btn btn-outline-primary" @onclick="@NextAsync">Draw Card</button>
-                </div>
-            </div>
-            <div class="cardPileContainerContainer">
-                <div class="cardPileContainer">
-                    <button id="discardPile" class="cardPile btn btn-outline-primary"></button>
-                </div>
-            </div>
+            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw @(nextPlayer.Name)'s<br/>Next Card</div></CardPile>
+            <CardPile ButtonId="discardPile">
+                @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
+                {
+                    Card card = Game.CurrentTurn.Card;
+                    <CardSquare Type="@card.Type" IsDouble ="@card.IsDouble">
+                        @if (!Util.IsColor(card.Type))
+                        {
+                            @Util.GetNameWithSpaces(card.Type);
+                        }
+                    </CardSquare>
+    if (card.IsDouble)
+    {
+                        <CardSquare Type="@card.Type" IsDouble ="@card.IsDouble" />
+    }
+}
+            </CardPile>
         </div>
     </div>
 
 @code {
 
     [Parameter] Game Game { get; set; }
+
+    private bool _animating;
+
+    private int _animatedPosition = -1;
 
     public async void NextAsync()
     {
@@ -60,13 +106,45 @@ full text of the license.
         }
         Game.Next();
         Turn turn = Game.CurrentTurn;
-        await AnimateTurnAsync(turn);
+        await AnimateTurnAsync();
     }
 
-    public async Task AnimateTurnAsync(Turn turn)
+    public async Task AnimateTurnAsync()
     {
-
+        Turn turn = Game.CurrentTurn;
+        _animating = true;
+        _animatedPosition = turn.StartPosition;
+        foreach (Move move in turn.Moves)
+        {
+            await AnimateMoveAsync(move);
+        }
+        _animating = false;
+        _animatedPosition = -1;
         StateHasChanged();
     }
 
-}
+    public async Task AnimateMoveAsync(Move move)
+    {
+        if (move.Fly)
+        {
+            await AnimateFlyAsync(move);
+        }
+        else
+        {
+            for (; _animatedPosition < move.Position; _animatedPosition++)
+            {
+                StateHasChanged();
+                await Task.Delay(100);
+            }
+        }
+    }
+
+    public async Task AnimateFlyAsync(Move move)
+    {
+        Task.Delay(1000);
+        _animatedPosition = move.Position;
+        StateHasChanged();
+        await Task.Delay(100);
+    }
+
+    }

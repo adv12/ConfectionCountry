@@ -107,10 +107,7 @@ h1 {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-items: center;
-    align-content: center;
     justify-content: center;
-    justify-items: center;
     overflow-x: hidden;
     overflow-y: hidden;
     padding: 8px;
@@ -127,7 +124,7 @@ h1 {
 }
 
 .cardPileContainer {
-    padding-top: 60%; /* Padding is based on width.  Set up a 1:0.6 aspect ratio for the board */
+    padding-top: 65%; /* Padding is based on width.  Set up a 1:0.65 aspect ratio for the card piles. */
     height: 0;
     position: relative;
     overflow-x: hidden;
@@ -141,6 +138,7 @@ h1 {
     bottom: 0;
     right: 0;
     width: 100%;
+    padding: 0;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -153,13 +151,66 @@ h1 {
     color: var(--blue);
 }
 
+.cardSquareContainerContainer {
+    flex: initial;
+    display: block;
+    width: 45%; /* size of square when only one present */
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 2.25%
+}
+
+.cardSquareContainerContainer.double {
+    width: 41%; /* size of square when two present */
+}
+
+.cardSquareContainer {
+    padding-top: 100%; /* Padding is based on width.  Set up a 1:1 aspect ratio. */
+    height: 0;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.cardSquare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    border-radius: 8%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: large;
+    font-weight: bold;
+}
+
+#drawButtonText {
+    padding: 5%;
+}
+
 .doNotDisturb {
     pointer-events: none;
 }
 
 .space {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 2px;
+    font-weight: bold;
+}
+
+.player {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    margin: auto;
+    border-radius: 50%;
+    border: 2px solid white;
 }
 
 .red {
@@ -174,7 +225,7 @@ h1 {
 
 .yellow {
     background-color: var(--yellow);
-    color: black;
+    color: white;
 }
 
 .green {
@@ -194,7 +245,7 @@ h1 {
 
 .pink {
     background-color: var(--pink);
-    color: black;
+    color: white;
 }
 
 @media (max-width: 480px) and (min-aspect-ratio: 1 / 2) {

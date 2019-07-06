@@ -10,14 +10,7 @@ namespace ConfectionCountry
 {
     public class Game
     {
-        private static SpaceType[] _colors = new SpaceType[] {
-            SpaceType.Red,
-            SpaceType.Purple,
-            SpaceType.Yellow,
-            SpaceType.Blue,
-            SpaceType.Orange,
-            SpaceType.Green
-        };
+
         private static SpecialSpace[] _specialSpaces = new SpecialSpace[]
         {
             new SpecialSpace(8, SpaceType.GingerbreadMan),
@@ -52,9 +45,9 @@ namespace ConfectionCountry
                 }
                 else
                 {
-                    _spaces[i] = _colors[currentColorIndex++];
+                    _spaces[i] = Util.Colors[currentColorIndex++];
                 }
-                if (currentColorIndex == _colors.Length)
+                if (currentColorIndex == Util.Colors.Length)
                 {
                     currentColorIndex = 0;
                 }
@@ -141,14 +134,14 @@ namespace ConfectionCountry
         public Game()
         {
             InitializeDeck();
-            Players.Add(new Player());
-            Players.Add(new Player());
+            Players.Add(new Player("", PlayerColor.Red));
+            Players.Add(new Player("", PlayerColor.Yellow));
         }
 
         public void InitializeDeck()
         {
             _deck.Clear();
-            foreach (SpaceType type in _colors)
+            foreach (SpaceType type in Util.Colors)
             {
                 for (int i = 0; i < 6; i++)
                 {
@@ -256,14 +249,14 @@ namespace ConfectionCountry
             {
                 return;
             }
-            if (_colors.Contains(turn.Card.Type))
+            if (Util.IsColor(turn.Card.Type))
             {
                 position = GetPositionOfNext(turn.Card.Type, position);
                 if (turn.Card.IsDouble)
                 {
                     position = GetPositionOfNext(turn.Card.Type, position);
                 }
-                turn.Moves.Add(new Move(GetColorSpaceTypeName(turn.Card.Type, turn.Card.IsDouble), position));
+                turn.Moves.Add(new Move(GetColorSpaceTypeName(turn.Card.Type, turn.Card.IsDouble), position, false));
             }
             else
             {
@@ -275,7 +268,7 @@ namespace ConfectionCountry
                         if (space != null)
                         {
                             position = space.Position;
-                            turn.Moves.Add(new Move(GetSpecialSpaceTypeName(turn.Card.Type), position));
+                            turn.Moves.Add(new Move(GetSpecialSpaceTypeName(turn.Card.Type), position, true));
                         }
                     }
                 }
@@ -283,7 +276,7 @@ namespace ConfectionCountry
             if (HasPass(position, out Pass pass))
             {
                 position = pass.EndPosition;
-                turn.Moves.Add(new Move(pass.Name, pass.EndPosition));
+                turn.Moves.Add(new Move(pass.Name, pass.EndPosition, true));
             }
             SetPlayerPosition(turn.Player, position);
         }

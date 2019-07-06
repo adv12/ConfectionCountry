@@ -9,10 +9,13 @@ namespace ConfectionCountry
         public string Name { get; }
         public int Position { get; }
 
-        public Move(string name, int position)
+        public bool Fly { get; }
+
+        public Move(string name, int position, bool fly)
         {
             Name = name;
             Position = position;
+            Fly = fly;
         }
     }
 }

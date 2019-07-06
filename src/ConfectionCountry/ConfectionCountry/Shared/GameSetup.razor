@@ -32,7 +32,6 @@ Enter the player names and colors.  The youngest player should be entered first.
 </form>
 <div class="buttonStack">
     <button class="btn btn-outline-primary" @onclick="@AddPlayer">Add Player</button>
-    <button class="btn btn-outline-primary" @onclick="@ShuffleDeck">Shuffle Deck</button>
     <button class="btn btn-primary" @onclick="@StartGame" disabled="@(!Game.SetupValid)">Start Game!</button>
 </div>
 
@@ -70,11 +69,6 @@ Enter the player names and colors.  The youngest player should be entered first.
                     existingPlayer.Color = 0;
                 }
                 player.Color = color;
-            }
-
-            public void ShuffleDeck()
-            {
-                Game.ShuffleDeck();
             }
 
             public void StartGame()

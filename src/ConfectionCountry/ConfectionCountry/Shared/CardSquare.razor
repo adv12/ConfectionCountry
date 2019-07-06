@@ -1,0 +1,20 @@
+@inherits LayoutComponentBase
+<!--
+Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
+See license.txt in the ConfectionCountry distribution or repository for the
+full text of the license.
+-->
+
+<div class="cardSquareContainerContainer  @(IsDouble ? "double" : "")">
+    <div class="cardSquareContainer">
+        <div class="cardSquare @(Util.GetColorClass(Type))">
+            @ChildContent
+        </div>
+    </div>
+</div>
+
+@code {
+        [Parameter] SpaceType Type { get; set; }
+        [Parameter] RenderFragment ChildContent { get; set; }
+        [Parameter] bool IsDouble { get; set; }
+}

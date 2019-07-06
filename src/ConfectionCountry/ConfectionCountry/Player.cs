@@ -9,6 +9,16 @@ namespace ConfectionCountry
         public string Name { get; set; }
 
         public PlayerColor Color { get; set; }
+        public Player()
+        {
+
+        }
+
+        public Player(string name, PlayerColor color)
+        {
+            Name = name;
+            Color = color;
+        }
 
     }
 }
