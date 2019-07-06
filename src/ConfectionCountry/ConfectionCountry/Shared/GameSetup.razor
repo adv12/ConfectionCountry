@@ -5,13 +5,12 @@ full text of the license.
 -->
 
 <h3>Game Setup</h3>
-Enter the player names and colors.  The youngest player should be Player 1.
+Enter the player names and colors.  The youngest player should be entered first.
 <form class="setupGrid formGroup @(Game.Players.Count < 3 ? "canDelete" : "")">
     @{ int i = 1; }
     @foreach (Player p in Game.Players)
     {
         Player player = p;
-        <span class="label">Player @(i++):</span>
         <input type="text" @oninput="@((e) => HandleInput(e, player))"
                class="form-control" required="required" pattern="\w[\w\s]*"/>
         <div class="dropdown">

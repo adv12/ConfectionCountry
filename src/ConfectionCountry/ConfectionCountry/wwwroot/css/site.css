@@ -11,16 +11,19 @@ app {
 }
 
 .top-row {
-    height: 3.5rem;
+    flex: none;
     display: flex;
     justify-content: center;
 }
 
 .main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .content {
+    flex: 1;
     padding-top: 1.1rem;
 }
 
@@ -34,7 +37,7 @@ h1 {
     display: grid;
     align-items: center;
     grid-gap: 16px;
-    grid-template-columns: max-content max-content max-content max-content;
+    grid-template-columns: max-content max-content max-content;
 }
 
     .setupGrid.canDelete .removePlayerButton {
@@ -47,36 +50,102 @@ h1 {
 }
 
 .gameUI {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: center;
+    align-items: stretch;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.boardContainerContainer {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+    width: 432px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.boardContainer {
+    margin: 0 auto;
+    padding-top: 100%; /* Padding is based on width.  Set up a 1:1 aspect ratio for the board */
+    height: 0;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.board {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(12, calc((100% + 4px) / 12.0 - 4px));
+    grid-template-rows: repeat(12, calc((100% + 4px) / 12.0 - 4px));
+    grid-gap: 4px;
 }
 
 .nextPlayer {
-    width: 200px;
-    height: 115px;
+    flex: none;
+    display: block;
+    margin: 16px auto;
+}
+
+.nextPlayer > * {
     text-align: center;
     padding: 10px;
     border-radius: 5px;
 }
 
-.board {
-    display: grid;
-    grid-template-columns: repeat(12, 32px);
-    grid-template-rows: repeat(12, 32px);
-    grid-row-gap: 3px;
+.bottomRow {
+    flex: initial;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding: 8px;
+}
+
+.cardPileContainerContainer {
+    flex: initial;
+    display: block;
+    width: 200px;
+    max-width: calc((100% - (3 * 16px)) / 2);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 8px;
+}
+
+.cardPileContainer {
+    padding-top: 60%; /* Padding is based on width.  Set up a 1:0.6 aspect ratio for the board */
+    height: 0;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .cardPile {
-    width: 200px;
-    height: 115px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content:center;
+    justify-content: center;
     border-radius: 5px;
-    margin: 16px;
 }
 
 .cardPile.btn.btn-outline-primary:hover {
@@ -86,11 +155,6 @@ h1 {
 
 .doNotDisturb {
     pointer-events: none;
-}
-
-.cardPiles {
-    display: flex;
-    flex-direction: row;
 }
 
 .space {
@@ -131,4 +195,16 @@ h1 {
 .pink {
     background-color: var(--pink);
     color: black;
+}
+
+@media (max-width: 480px) and (min-aspect-ratio: 1 / 2) {
+    .top-row {
+        display: none;
+    }
+}
+
+@media (max-height: 700px) and (min-aspect-ratio: 1 / 2) {
+    .top-row {
+        display: none;
+    }
 }

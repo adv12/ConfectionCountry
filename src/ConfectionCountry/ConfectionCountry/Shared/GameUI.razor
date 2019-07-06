@@ -3,28 +3,48 @@ Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
 See license.txt in the ConfectionCountry distribution or repository for the
 full text of the license.
 -->
-@{ 
+@{
     Player nextPlayer = Game.NextNonSkippedPlayer;
     SpaceType[] spaces = Game.Spaces;
+    Player winner = Game.Winner;
 }
 
     <div class="gameUI">
-        <div class="board">
-            @for (int i = 11; i >= 0; i--)
-            {
-                bool odd = ((i + 1) % 2 > 0);
-                for (int j = 0; j < 12; j++)
-                {
-                    int index = 12 * i + (odd ? j : 12 - 1 - j);
-            <div id="space@(index)" style="order: @(143 - index));"
-                 class="space @(index <= 133 ? Util.GetColorClass(spaces[index]) : "")">@(index <= 133 ? index.ToString() : "")</div>
-                }
-            }
+        @if (!Game.GameOver)
+        {
+            <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
+        }
+        else
+        {
+            <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
+        }
+        <div class="boardContainerContainer">
+            <div class="boardContainer">
+                <div class="board">
+                    @for (int i = 11; i >= 0; i--)
+                    {
+                        bool odd = ((i + 1) % 2 > 0);
+                        for (int j = 0; j < 12; j++)
+                        {
+                            int index = 12 * i + (odd ? j : 12 - 1 - j);
+                            <div id="space@(index)" style="order: @(143 - index));"
+                                 class="space @(index <= 133 ? Util.GetColorClass(spaces[index]) : "")">@(index <= 133 ? index.ToString() : "")</div>
+                            }
+                        }
+                </div>
+            </div>
         </div>
-        <div class="cardPiles">
-            <strong class="nextPlayer @(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong>
-            <button id="deck" class="cardPile btn btn-outline-primary" @onclick="@NextAsync">Draw Card</button>
-            <button id="discardPile" class="cardPile btn btn-outline-primary"></button>
+        <div class="bottomRow">
+            <div class="cardPileContainerContainer">
+                <div class="cardPileContainer">
+                    <button id="deck" class="cardPile btn btn-outline-primary" @onclick="@NextAsync">Draw Card</button>
+                </div>
+            </div>
+            <div class="cardPileContainerContainer">
+                <div class="cardPileContainer">
+                    <button id="discardPile" class="cardPile btn btn-outline-primary"></button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -41,7 +61,7 @@ full text of the license.
 
     public async Task AnimateTurnAsync(Turn turn)
     {
-        
+
         StateHasChanged();
     }
 
