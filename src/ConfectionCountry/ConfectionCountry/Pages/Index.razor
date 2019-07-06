@@ -1,0 +1,25 @@
+﻿@page "/"
+
+<!--
+Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
+See license.txt in the ConfectionCountry distribution or repository for the
+full text of the license.
+-->
+
+@if (!_game.Started)
+{
+    <GameSetup Game="@_game" OnStartGame="@(() => _game.Start())" />
+}
+else if (!_game.Accepted)
+{
+    <GameUI Game="@_game" />
+}
+else
+{
+    <div>Hello.</div>
+}
+
+@code
+{
+    private Game _game = new Game();
+}

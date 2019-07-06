@@ -1,0 +1,12 @@
+<div class="player @(!Exists ? "noSuchPlayer": "")">
+    @if (Exists)
+    {
+        <div>@Game.Players[PlayerIndex].Name)</div>
+    }
+</div>
+
+@code {
+    [Parameter] Game Game { get; set; }
+    [Parameter] int PlayerIndex { get; set; }
+    bool Exists => PlayerIndex < Game.Players.Count;
+}
