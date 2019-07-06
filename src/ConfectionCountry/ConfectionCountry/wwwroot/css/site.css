@@ -75,7 +75,7 @@ h1 {
     height: 0;
     position: relative;
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: visible;
 }
 
 .board {
@@ -185,6 +185,7 @@ h1 {
     justify-content: center;
     font-size: large;
     font-weight: bold;
+    padding: 4px;
 }
 
 #drawButtonText {
