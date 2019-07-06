@@ -54,6 +54,10 @@ full text of the license.
 
     public async void NextAsync()
     {
+        if (Game.GameOver)
+        {
+            return;
+        }
         Game.Next();
         Turn turn = Game.CurrentTurn;
         await AnimateTurnAsync(turn);
