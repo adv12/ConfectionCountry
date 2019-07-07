@@ -1,28 +1,35 @@
 @using System
-
 <!--
 Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
 See license.txt in the ConfectionCountry distribution or repository for the
 full text of the license.
 -->
 @{
-    Player nextPlayer = Game.NextNonSkippedPlayer;
+    Player nextPlayer;
+    if (_animating)
+    {
+        nextPlayer = Game.CurrentTurn.Player;
+    }
+    else
+    {
+        nextPlayer = Game.NextNonSkippedPlayer;
+    }
     SpaceType[] spaces = Game.Spaces;
     Player winner = Game.Winner;
     SpecialSpace space;
     Pass pass;
 }
 
-    <div class="gameUI">
-        @if (!Game.GameOver)
-        {
-            <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
-        }
-        else
-        {
-            <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
-        }
-        <div class="boardContainerContainerContainer">
+<div class="gameUI @(_animating ? "doNotDisturb" : "")">
+    @if (_animating || !Game.GameOver)
+    {
+        <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
+    }
+    else
+    {
+        <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
+    }
+    <div class="boardContainerContainerContainer">
         <div class="boardContainerContainer">
             <div class="boardContainer">
                 <div class="board">
@@ -33,64 +40,63 @@ full text of the license.
                         {
                             int index = 12 * i + (odd ? j : 12 - 1 - j);
                             string colorClass = index <= 133 ? Util.GetColorClass(spaces[index]) : "";
-                            <div id="space@(index)"
-                                 class="space @(colorClass)">
-                                @if (Game.IsSpecialSpace(index, out space))
-                                {
-                                    @(Util.GetNameAbbreviation(space))
-                                }
-                                @if (Game.IsLicorice(index))
-                                {
-                                    <text>X</text>
-                                }
-                                @if (Game.HasPass(index, out pass))
-                                {
-                                    @(odd ? ">>" : "&lt;&lt;")
-                                }
-                                @if (index <= 133 && ((!odd && j == 0) || (odd && j == 11)))
-                                {
-                                    <text>^</text>
-                                }
-                                @for (int p = 0; p < Game.Players.Count; p++)
-                                {
-                                    Player player = Game.Players[p];
-                                    int position = Game.PlayerPositions[p];
-                                    if (Game.CurrentTurn != null && _animating && player == Game.CurrentTurn.Player)
-                                    {
-                                        position = _animatedPosition;
-                                    }
-                                    if (position == index)
-                                    {
-                                        <div class="player player@(p + 1) @(Util.GetBootstrapClasses(player.Color))"></div>
-                                    }
-                                }
-                            </div>
+                            <div id="space@(index)" class="space @(colorClass)">
+                        @for (int p = 0; p < Game.Players.Count; p++)
+                        {
+                            Player player = Game.Players[p];
+                            int position = Game.PlayerPositions[p];
+                            if (Game.CurrentTurn != null && _animating && player == Game.CurrentTurn.Player)
+                            {
+                                position = _animatedPosition;
+                            }
+                            if (position == index)
+                            {
+                                <div class="player player@(p + 1) @(Util.GetBootstrapClasses(player.Color))"></div>
+                            }
+                        }
+                        @if (Game.IsSpecialSpace(index, out space))
+                        {
+                            @(Util.GetNameAbbreviation(space))
+                        }
+                        @if (Game.IsLicorice(index))
+                        {
+                            <text>X</text>
+                        }
+                        @if (Game.HasPass(index, out pass))
+                        {
+                            @(odd ? ">>" : "&lt;&lt;")
+                        }
+                        @if (index <= 133 && ((!odd && j == 0) || (odd && j == 11)))
+                        {
+                            <text>^</text>
+                        }
+                    </div>
                         }
                     }
                 </div>
             </div>
         </div>
-            </div>
-        <div class="bottomRow">
-            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
-            <CardPile ButtonId="discardPile">
-                @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
-                {
-                    Card card = Game.CurrentTurn.Card;
-                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
-                        @if (!Util.IsColor(card.Type))
-                        {
-                            @Util.GetNameWithSpaces(card.Type);
-                        }
-                    </CardSquare>
-                    if (card.IsDouble)
-                    {
-                        <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
-                    }
-                }
-            </CardPile>
-        </div>
     </div>
+    <div class="bottomRow">
+        <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
+        <CardPile ButtonId="discardPile">
+            @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
+            {
+                Card card = Game.CurrentTurn.Card;
+                <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
+                    @if (!Util.IsColor(card.Type))
+                    {
+                        @Util.GetNameWithSpaces(card.Type);
+                    }
+                </CardSquare>
+                if (card.IsDouble)
+                {
+                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
+                }
+            }
+        </CardPile>
+    </div>
+</div>
 
 @code {
 
@@ -107,15 +113,15 @@ full text of the license.
             return;
         }
         Game.Next();
-        Turn turn = Game.CurrentTurn;
         await AnimateTurnAsync();
     }
 
     public async Task AnimateTurnAsync()
     {
-        Turn turn = Game.CurrentTurn;
         _animating = true;
+        Turn turn = Game.CurrentTurn;
         _animatedPosition = turn.StartPosition;
+        await Task.Delay(500);
         foreach (Move move in turn.Moves)
         {
             await AnimateMoveAsync(move);
@@ -149,4 +155,4 @@ full text of the license.
         await Task.Delay(100);
     }
 
-    }
+}
