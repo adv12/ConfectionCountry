@@ -20,6 +20,7 @@ app {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
 }
 
 .content {
@@ -58,10 +59,14 @@ h1 {
     overflow-y: hidden;
 }
 
-.boardContainerContainer {
-    flex: 1;
+.boardContainerContainerContainer {
+    flex: auto;
+    display: block;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.boardContainerContainer {
     display: block;
     width: 432px;
     max-width: 100%;
@@ -84,6 +89,9 @@ h1 {
     left: 0;
     bottom: 0;
     right: 0;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(12, calc((100% + 4px) / 12.0 - 4px));
     grid-template-rows: repeat(12, calc((100% + 4px) / 12.0 - 4px));
@@ -103,7 +111,7 @@ h1 {
 }
 
 .bottomRow {
-    flex: initial;
+    flex: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;

@@ -15,13 +15,14 @@ full text of the license.
 
     <div class="gameUI">
         @if (!Game.GameOver)
-{
+        {
             <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
-}
-else
-{
+        }
+        else
+        {
             <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
-}
+        }
+        <div class="boardContainerContainerContainer">
         <div class="boardContainerContainer">
             <div class="boardContainer">
                 <div class="board">
@@ -69,23 +70,24 @@ else
                 </div>
             </div>
         </div>
+            </div>
         <div class="bottomRow">
-            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw @(nextPlayer.Name)'s<br/>Next Card</div></CardPile>
+            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
             <CardPile ButtonId="discardPile">
                 @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
                 {
                     Card card = Game.CurrentTurn.Card;
-                    <CardSquare Type="@card.Type" IsDouble ="@card.IsDouble">
+                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
                         @if (!Util.IsColor(card.Type))
                         {
                             @Util.GetNameWithSpaces(card.Type);
                         }
                     </CardSquare>
-    if (card.IsDouble)
-    {
-                        <CardSquare Type="@card.Type" IsDouble ="@card.IsDouble" />
-    }
-}
+                    if (card.IsDouble)
+                    {
+                        <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
+                    }
+                }
             </CardPile>
         </div>
     </div>
