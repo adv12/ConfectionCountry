@@ -45,8 +45,11 @@ h1 {
         visibility: hidden;
     }
 
-.buttonStack > button {
+.buttonStack {
     margin-top: 16px;
+}
+
+.buttonStack > * {
     margin-right: 16px;
 }
 

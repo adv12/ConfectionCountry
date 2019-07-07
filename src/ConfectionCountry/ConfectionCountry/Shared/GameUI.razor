@@ -78,7 +78,15 @@ full text of the license.
         </div>
     </div>
     <div class="bottomRow">
-        <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
+        @if (AutoPlay)
+        {
+            <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
+        }
+        else
+        {
+            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
+        }
+
         <CardPile ButtonId="discardPile">
             @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
             {
@@ -102,6 +110,8 @@ full text of the license.
 
     [Parameter] Game Game { get; set; }
 
+    [Parameter] bool AutoPlay { get; set; }
+
     private bool _animating;
 
     private int _animatedPosition = -1;
@@ -114,6 +124,16 @@ full text of the license.
         }
         Game.Next();
         await AnimateTurnAsync();
+    }
+
+    public async void AutoPlayAsync()
+    {
+        while (!Game.GameOver)
+        {
+            _animating = true;
+            Game.Next();
+            await AnimateTurnAsync();
+        }
     }
 
     public async Task AnimateTurnAsync()
@@ -149,7 +169,7 @@ full text of the license.
 
     public async Task AnimateFlyAsync(Move move)
     {
-        Task.Delay(1000);
+        await Task.Delay(1000);
         _animatedPosition = move.Position;
         StateHasChanged();
         await Task.Delay(100);

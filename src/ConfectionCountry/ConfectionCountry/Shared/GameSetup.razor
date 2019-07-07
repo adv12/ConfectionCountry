@@ -32,47 +32,53 @@ Enter the player names and colors.  The youngest player should be entered first.
 </form>
 <div class="buttonStack">
     <button class="btn btn-outline-primary" @onclick="@AddPlayer">Add Player</button>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="autoPlayCheckbox" @bind="@AutoPlay" />
+        <label class="form-check-label" for="autoPlayCheckbox">AutoPlay</label>
+    </div>
     <button class="btn btn-primary" @onclick="@StartGame" disabled="@(!Game.SetupValid)">Start Game!</button>
 </div>
 
 @code {
-            [Parameter] Game Game { get; set; }
+        [Parameter] Game Game { get; set; }
 
-            [Parameter] EventCallback OnStartGame { get; set; }
+        [Parameter] EventCallback OnStartGame { get; set; }
 
-            public PlayerColor[] AllColors => (PlayerColor[])Enum.GetValues(typeof(PlayerColor));
+        public PlayerColor[] AllColors => (PlayerColor[])Enum.GetValues(typeof(PlayerColor));
 
+        public bool AutoPlay { get; set; }
 
-            public void HandleInput(UIChangeEventArgs e, Player player)
+        public void HandleInput(UIChangeEventArgs e, Player player)
+        {
+            player.Name = (string)e.Value;
+            StateHasChanged();
+        }
+
+        public void RemovePlayer(Player player)
+        {
+            Game.Players.Remove(player);
+            StateHasChanged();
+        }
+
+        public void AddPlayer()
+        {
+            PlayerColor color = AllColors.First(c => !Game.Players.Any(p => p.Color == c));
+            Game.Players.Add(new Player("", color));
+            StateHasChanged();
+        }
+
+        public void SetColor(Player player, PlayerColor color)
+        {
+            Player existingPlayer = Game.Players.FirstOrDefault(p => p.Color == color);
+            if (existingPlayer != null)
             {
-                player.Name = (string)e.Value;
-                StateHasChanged();
+                existingPlayer.Color = 0;
             }
+            player.Color = color;
+        }
 
-            public void RemovePlayer(Player player)
-            {
-                Game.Players.Remove(player);
-                StateHasChanged();
-            }
-
-            public void AddPlayer()
-            {
-                Game.Players.Add(new Player());
-                StateHasChanged();
-            }
-
-            public void SetColor(Player player, PlayerColor color)
-            {
-                Player existingPlayer = Game.Players.FirstOrDefault(p => p.Color == color);
-                if (existingPlayer != null)
-                {
-                    existingPlayer.Color = 0;
-                }
-                player.Color = color;
-            }
-
-            public void StartGame()
-            {
-                OnStartGame.InvokeAsync(null);
-            }
+        public void StartGame()
+        {
+            OnStartGame.InvokeAsync(AutoPlay);
+        }
         }

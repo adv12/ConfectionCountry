@@ -8,11 +8,11 @@ full text of the license.
 
 @if (!_game.Started)
 {
-    <GameSetup Game="@_game" OnStartGame="@(() => _game.Start())" />
+    <GameSetup Game="@_game" OnStartGame="@((autoPlay) => { _autoPlay = (bool)autoPlay; _game.Start(); })" />
 }
 else if (!_game.Accepted)
 {
-    <GameUI Game="@_game" />
+    <GameUI Game="@_game" AutoPlay="@_autoPlay" />
 }
 else
 {
@@ -21,5 +21,7 @@ else
 
 @code
 {
-    private Game _game = new Game();
+private Game _game = new Game();
+
+private bool _autoPlay = false;
 }

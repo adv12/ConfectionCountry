@@ -120,5 +120,6 @@ namespace ConfectionCountry
         {
             return Array.IndexOf(_colors, type) > -1;
         }
+
     }
 }
