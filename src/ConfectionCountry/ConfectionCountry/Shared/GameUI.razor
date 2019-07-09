@@ -20,15 +20,24 @@ full text of the license.
     Pass pass;
 }
 
-<div class="gameUI @(_animating ? "doNotDisturb" : "")">
-    @if (_animating || !Game.GameOver)
-    {
-        <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
-    }
-    else
-    {
-        <div class="nextPlayer"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
-    }
+<div class="gameUI">
+    <div class="topRowContainer">
+        <div class="topRow">
+            @if (_animating || !Game.GameOver)
+            {
+                <div class="topRowItem"><strong class="@(Util.GetBootstrapClasses(nextPlayer.Color))">@(nextPlayer.Name)'s Turn</strong></div>
+            }
+            else
+            {
+                <div class="topRowItem"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
+            }
+            <div class="topRowItem">
+                <label for="autoPlayCheckbox">
+                    <strong><input type="checkbox" id="autoPlayCheckbox" @bind="@AutoPlay" /> AutoPlay</strong>
+                </label>
+            </div>
+        </div>
+    </div>
     <div class="boardContainerContainerContainer">
         <div class="boardContainerContainer">
             <div class="boardContainer">
@@ -41,36 +50,36 @@ full text of the license.
                             int index = 12 * i + (odd ? j : 12 - 1 - j);
                             string colorClass = index <= 133 ? Util.GetColorClass(spaces[index]) : "";
                             <div id="space@(index)" class="space @(colorClass)">
-                        @for (int p = 0; p < Game.Players.Count; p++)
-                        {
-                            Player player = Game.Players[p];
-                            int position = Game.PlayerPositions[p];
-                            if (Game.CurrentTurn != null && _animating && player == Game.CurrentTurn.Player)
-                            {
-                                position = _animatedPosition;
-                            }
-                            if (position == index)
-                            {
-                                <div class="player player@(p + 1) @(Util.GetBootstrapClasses(player.Color))"></div>
-                            }
-                        }
-                        @if (Game.IsSpecialSpace(index, out space))
-                        {
-                            @(Util.GetNameAbbreviation(space))
-                        }
-                        @if (Game.IsLicorice(index))
-                        {
-                            <text>X</text>
-                        }
-                        @if (Game.HasPass(index, out pass))
-                        {
-                            @(odd ? ">>" : "&lt;&lt;")
-                        }
-                        @if (index <= 133 && ((!odd && j == 0) || (odd && j == 11)))
-                        {
-                            <text>^</text>
-                        }
-                    </div>
+                                @for (int p = 0; p < Game.Players.Count; p++)
+                                {
+                                    Player player = Game.Players[p];
+                                    int position = Game.PlayerPositions[p];
+                                    if (Game.CurrentTurn != null && _animating && player == Game.CurrentTurn.Player)
+                                    {
+                                        position = _animatedPosition;
+                                    }
+                                    if (position == index)
+                                    {
+                                        <div class="player player@(p + 1) @(Util.GetBootstrapClasses(player.Color))"></div>
+                                    }
+                                }
+                                @if (Game.IsSpecialSpace(index, out space))
+                                {
+                                    @(Util.GetNameAbbreviation(space))
+                                }
+                                @if (Game.IsLicorice(index))
+                                {
+                                    <text>X</text>
+                                }
+                                @if (Game.HasPass(index, out pass))
+                                {
+                                    @(odd ? ">>" : "&lt;&lt;")
+                                }
+                                @if (index <= 133 && ((!odd && j == 0) || (odd && j == 11)))
+                                {
+                                    <text>^</text>
+                                }
+                            </div>
                         }
                     }
                 </div>
@@ -78,7 +87,11 @@ full text of the license.
         </div>
     </div>
     <div class="bottomRow">
-        @if (AutoPlay)
+        @if (Game.GameOver)
+        {
+            <CardPile OnClick="@Reset" ButtonId="deck"><div id="drawButtonText">New Game</div></CardPile>
+        }
+        else if (AutoPlay)
         {
             <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
         }
@@ -104,13 +117,15 @@ full text of the license.
             }
         </CardPile>
     </div>
-</div>
+    </div>
 
 @code {
 
     [Parameter] Game Game { get; set; }
+    
+    [Parameter] EventCallback OnReset { get; set; }
 
-    [Parameter] bool AutoPlay { get; set; }
+    bool AutoPlay { get; set; }
 
     private bool _animating;
 
@@ -128,7 +143,7 @@ full text of the license.
 
     public async void AutoPlayAsync()
     {
-        while (!Game.GameOver)
+        while (AutoPlay && !Game.GameOver)
         {
             _animating = true;
             Game.Next();
@@ -173,6 +188,11 @@ full text of the license.
         _animatedPosition = move.Position;
         StateHasChanged();
         await Task.Delay(100);
+    }
+
+    public void Reset()
+    {
+        OnReset.InvokeAsync(null);
     }
 
 }

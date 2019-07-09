@@ -32,10 +32,6 @@ Enter the player names and colors.  The youngest player should be entered first.
 </form>
 <div class="buttonStack">
     <button class="btn btn-outline-primary" @onclick="@AddPlayer">Add Player</button>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="autoPlayCheckbox" @bind="@AutoPlay" />
-        <label class="form-check-label" for="autoPlayCheckbox">AutoPlay</label>
-    </div>
     <button class="btn btn-primary" @onclick="@StartGame" disabled="@(!Game.SetupValid)">Start Game!</button>
 </div>
 
