@@ -93,7 +93,14 @@ full text of the license.
         }
         else if (AutoPlay)
         {
-            <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
+            if (Paused)
+            {
+                <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
+            }
+            else
+            {
+                <CardPile OnClick="@Pause" ButtonId="deck"><div id="drawButtonText">Pause</div></CardPile>
+            }
         }
         else
         {
@@ -122,10 +129,12 @@ full text of the license.
 @code {
 
     [Parameter] Game Game { get; set; }
-    
+
     [Parameter] EventCallback OnReset { get; set; }
 
     bool AutoPlay { get; set; }
+
+    bool Paused { get; set; } = true;
 
     private bool _animating;
 
@@ -143,7 +152,8 @@ full text of the license.
 
     public async void AutoPlayAsync()
     {
-        while (AutoPlay && !Game.GameOver)
+        Paused = false;
+        while (AutoPlay && !Paused && !Game.GameOver)
         {
             _animating = true;
             Game.Next();
@@ -174,7 +184,7 @@ full text of the license.
         }
         else
         {
-            for (; _animatedPosition < move.Position; _animatedPosition++)
+            for (; _animatedPosition <= move.Position; _animatedPosition++)
             {
                 StateHasChanged();
                 await Task.Delay(100);
@@ -190,9 +200,17 @@ full text of the license.
         await Task.Delay(100);
     }
 
+    public void Pause()
+    {
+        if (AutoPlay)
+        {
+            Paused = true;
+        }
+    }
+
     public void Reset()
     {
         OnReset.InvokeAsync(null);
     }
 
-}
+    }
