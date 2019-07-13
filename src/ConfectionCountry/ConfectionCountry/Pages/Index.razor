@@ -6,26 +6,40 @@ See license.txt in the ConfectionCountry distribution or repository for the
 full text of the license.
 -->
 
-@if (!_game.Started)
+@if (_batch != null)
 {
-    <GameSetup Game="@_game" OnStartGame="@(() => _game.Start())" />
+    <BatchUI Batch="@_batch" OnReset="@Reset" />
+}
+else if (!_game.Started)
+{
+    <GameSetup Game="@_game" OnStartGame="@(() => _game.Start())" OnStartBatch="@StartBatch" />
 }
 else if (!_game.Accepted)
 {
     <GameUI Game="@_game" OnReset="@Reset" />
 }
-else
-{
-    <div>Hello.</div>
-}
 
 @code
 {
 private Game _game = new Game();
+
+private Batch _batch;
+
 private Game _lastGame;
+
 public void Reset()
 {
     _lastGame = _game;
-    _game = new Game();
+    _game = new Game(_lastGame);
+    _batch = null;
+    StateHasChanged();
 }
+
+public void StartBatch()
+{
+    _batch = new Batch(_lastGame);
+    Console.WriteLine("In StartBatch()");
+    StateHasChanged();
+}
+
 }

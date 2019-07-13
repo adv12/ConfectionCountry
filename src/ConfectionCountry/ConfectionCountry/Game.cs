@@ -133,7 +133,31 @@ namespace ConfectionCountry
 
         public Game()
         {
+            Console.WriteLine("In default Game constructor");
             InitializeDeck();
+            SetupDefaultPlayers();
+        }
+
+        public Game(Game previous)
+        {
+            Console.WriteLine("In Game constructor with previous game");
+            InitializeDeck();
+            if (previous != null)
+            {
+                foreach (Player p in previous.Players)
+                {
+                    Players.Add(new Player(p.Name, p.Color));
+                }
+            }
+            else
+            {
+                Console.WriteLine("previous is null");
+            }
+        }
+
+        private void SetupDefaultPlayers()
+        {
+            Players.Clear();
             Players.Add(new Player("", PlayerColor.Red));
             Players.Add(new Player("", PlayerColor.Yellow));
         }
@@ -279,6 +303,14 @@ namespace ConfectionCountry
                 turn.Moves.Add(new Move(pass.Name, pass.EndPosition, true));
             }
             SetPlayerPosition(turn.Player, position);
+        }
+
+        public void PlayToEnd()
+        {
+            while(!GameOver)
+            {
+                Next();
+            }
         }
 
         private int GetPositionOfNext(SpaceType spaceType, int startPosition)

@@ -32,7 +32,7 @@ full text of the license.
                 <div class="topRowItem"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
             }
             <div class="topRowItem">
-                <label for="autoPlayCheckbox">
+                <label for="autoPlayCheckbox" style="visibility: @(ReadOnly ? "hidden" : "")">
                     <strong><input type="checkbox" id="autoPlayCheckbox" @bind="@AutoPlay" /> AutoPlay</strong>
                 </label>
             </div>
@@ -86,49 +86,54 @@ full text of the license.
             </div>
         </div>
     </div>
-    <div class="bottomRow">
-        @if (Game.GameOver)
-        {
-            <CardPile OnClick="@Reset" ButtonId="deck"><div id="drawButtonText">New Game</div></CardPile>
-        }
-        else if (AutoPlay)
-        {
-            if (Paused)
+    @if (!ReadOnly)
+    {
+        <div class="bottomRow">
+            @if (Game.GameOver)
             {
-                <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
+                <CardPile OnClick="@Reset" ButtonId="deck"><div id="drawButtonText">New Game</div></CardPile>
+            }
+            else if (AutoPlay)
+            {
+                if (Paused)
+                {
+                    <CardPile OnClick="@AutoPlayAsync" ButtonId="deck"><div id="drawButtonText">Play</div></CardPile>
+                }
+                else
+                {
+                    <CardPile OnClick="@Pause" ButtonId="deck"><div id="drawButtonText">Pause</div></CardPile>
+                }
             }
             else
             {
-                <CardPile OnClick="@Pause" ButtonId="deck"><div id="drawButtonText">Pause</div></CardPile>
+                <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
             }
-        }
-        else
-        {
-            <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
-        }
 
-        <CardPile ButtonId="discardPile">
-            @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
-            {
-                Card card = Game.CurrentTurn.Card;
-                <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
-                    @if (!Util.IsColor(card.Type))
-                    {
-                        @Util.GetNameWithSpaces(card.Type);
-                    }
-                </CardSquare>
-                if (card.IsDouble)
+            <CardPile ButtonId="discardPile">
+                @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
                 {
-                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
+                    Card card = Game.CurrentTurn.Card;
+                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
+                        @if (!Util.IsColor(card.Type))
+                        {
+                            @Util.GetNameWithSpaces(card.Type);
+                        }
+                    </CardSquare>
+                    if (card.IsDouble)
+                    {
+                        <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
+                    }
                 }
-            }
-        </CardPile>
-    </div>
+            </CardPile>
+        </div>
+    }
     </div>
 
 @code {
 
     [Parameter] Game Game { get; set; }
+
+    [Parameter] bool ReadOnly { get; set; }
 
     [Parameter] EventCallback OnReset { get; set; }
 
