@@ -48,6 +48,10 @@ h1 {
     margin-right: auto;
 }
 
+.topMargin {
+    margin-top: 16px;
+}
+
 .setupGrid {
     margin-top: 16px;
     margin-bottom: 16px;
@@ -79,6 +83,12 @@ h1 {
     overflow-y: hidden;
 }
 
+.batchStats {
+    flex: 1;
+    display: block;
+    overflow-y: auto;
+}
+
 .topRowContainer {
     flex: none;
     display: block;
@@ -92,6 +102,13 @@ h1 {
     max-width: 100%;
     justify-content: space-between;
     align-items: baseline;
+}
+
+.playerLabel {
+    flex: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .topRowItem {

@@ -37,7 +37,7 @@ public void Reset()
 
 public void StartBatch()
 {
-    _batch = new Batch(_lastGame);
+    _batch = new Batch(_game);
     Console.WriteLine("In StartBatch()");
     StateHasChanged();
 }

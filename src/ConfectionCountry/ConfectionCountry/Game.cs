@@ -133,14 +133,12 @@ namespace ConfectionCountry
 
         public Game()
         {
-            Console.WriteLine("In default Game constructor");
             InitializeDeck();
             SetupDefaultPlayers();
         }
 
         public Game(Game previous)
         {
-            Console.WriteLine("In Game constructor with previous game");
             InitializeDeck();
             if (previous != null)
             {
@@ -151,7 +149,7 @@ namespace ConfectionCountry
             }
             else
             {
-                Console.WriteLine("previous is null");
+                SetupDefaultPlayers();
             }
         }
 

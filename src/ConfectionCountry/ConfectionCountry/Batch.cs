@@ -11,29 +11,41 @@ namespace ConfectionCountry
 {
     public class Batch
     {
-        private Game _lastGame;
+        public Game TemplateGame { get; private set; }
 
         public Game CurrentGame { get; private set; }
 
-        public int NumberOfGames { get; set; }
+        public int NumberOfGames { get; set; } = 1000;
 
         public List<Game> CompletedGames { get; } = new List<Game>();
 
-        public Batch(Game lastGame)
+        public bool Complete => CompletedGames.Count == NumberOfGames;
+
+        private int[] _winCounts = new int[] { 0, 0, 0, 0 };
+
+        public Batch(Game templateGame)
         {
-            _lastGame = lastGame;
+            TemplateGame = templateGame;
         }
 
         public void Next()
         {
             if (CompletedGames.Count < NumberOfGames)
             {
-                Game tmp = new Game(_lastGame);
-                _lastGame = CurrentGame;
-                CurrentGame = tmp;
+                CurrentGame = new Game(TemplateGame);
                 CurrentGame.PlayToEnd();
+                _winCounts[CurrentGame.Players.IndexOf(CurrentGame.Winner)]++;
                 CompletedGames.Add(CurrentGame);
             }
+        }
+
+        public int GetWinCount(Player p)
+        {
+            if (CurrentGame == null)
+            {
+                return 0;
+            }
+            return _winCounts[CurrentGame.Players.IndexOf(CurrentGame.Winner)];
         }
 
     }

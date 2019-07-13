@@ -15,7 +15,6 @@ full text of the license.
         nextPlayer = Game.NextNonSkippedPlayer;
     }
     SpaceType[] spaces = Game.Spaces;
-    Player winner = Game.Winner;
     SpecialSpace space;
     Pass pass;
 }
@@ -29,7 +28,7 @@ full text of the license.
             }
             else
             {
-                <div class="topRowItem"><strong class="@(Util.GetBootstrapClasses(winner.Color))">@(winner.Name) Wins!</strong></div>
+                <div class="topRowItem"><strong class="@(Util.GetBootstrapClasses(Game.Winner.Color))">@(Game.Winner.Name) Wins!</strong></div>
             }
             <div class="topRowItem">
                 <label for="autoPlayCheckbox" style="visibility: @(ReadOnly ? "hidden" : "")">

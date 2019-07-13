@@ -4,60 +4,92 @@ See license.txt in the ConfectionCountry distribution or repository for the
 full text of the license.
 -->
 <div class="topRowContainer">
-    <form class="topRow formGroup">
+    <div class="topRow formGroup">
         <div class="topRowItem singleLine">
-            <input type="text" size="6" value="1000" @oninput="@((e) => HandleInput(e))"
-                   class="form-control" required="required" /> Games
+            <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="@((e) => HandleInput(e))"
+                   class="form-control" required="required" /> Games (@Batch.CompletedGames.Count complete)
+            </div>
+            <div class="topRowItem">
+                @if (Batch.CurrentGame == null || Paused)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync" disabled="@(Batch.NumberOfGames == 0)">Run Batch</button>
+                }
+                else if (Batch.CompletedGames.Count != Batch.NumberOfGames)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@Pause">Pause</button>
+                }
+                else if (ShowingStats)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Show Board</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Show Stats</button>
+                }
+            </div>
         </div>
-        <div class="topRowItem">
-            @if (Batch.CurrentGame == null || Paused)
-            {
-                <button class="btn btn-primary" @onclick="@RunBatchAsync">Run Batch</button>
-            }
-            else if (Batch.CompletedGames.Count == Batch.NumberOfGames)
-            {
-                <button class="btn btn-primary" @onclick="@Pause">Pause</button>
-            }
-        </div>
-    </form>
-</div>
-@if (Batch.CurrentGame != null)
-{
-    <GameUI Game="@Batch.CurrentGame" ReadOnly="@true" />
-}
-
-@code {
-
-[Parameter] public Batch Batch { get; set; }
-
-[Parameter] public EventCallback OnReset { get; set; }
-
-public bool Paused { get; set; } = true;
-
-public void Pause()
-{
-    Paused = true;
-}
-
-public void HandleInput(UIChangeEventArgs e)
-{
-    int.TryParse((string)e.Value, out int number);
-    Batch.NumberOfGames = number;
-    StateHasChanged();
-}
-
-public async void RunBatchAsync()
-{
-    Console.WriteLine("in RunBatchAsync");
-    return;
-    Paused = false;
-    while (!Paused && Batch.CompletedGames.Count < Batch.NumberOfGames)
+    </div>
+    @if (Visualize && Batch.CurrentGame != null && !ShowingStats)
     {
-        Console.WriteLine("Foo");
-        Batch.Next();
-        StateHasChanged();
-        //await Task.Delay(10);
+        <GameUI Game="@Batch.CurrentGame" ReadOnly="@true" />
     }
-}
+    else if (Batch.Complete && (!Visualize || ShowingStats))
+    {
+        <DefaultWidthBlock>
+            <BatchStats Batch="@Batch" />
+        </DefaultWidthBlock>
+    }
+    @if (Batch.Complete)
+    {
+        <DefaultWidthBlock>
+            <div class="topMargin">
+                A strange game.  The only winning move is not to play.
+            </div>
+        </DefaultWidthBlock>
+    }
 
-}
+    @code {
+
+    [Parameter] public Batch Batch { get; set; }
+
+    [Parameter] public EventCallback OnReset { get; set; }
+
+    public bool Visualize { get; set; } = true;
+
+    public bool Paused { get; set; } = true;
+
+    public bool ShowingStats { get; set; } = false;
+
+    public void Pause()
+    {
+        Paused = true;
+    }
+
+    public void HandleInput(UIChangeEventArgs e)
+    {
+        int.TryParse((string)e.Value, out int number);
+        Batch.NumberOfGames = number;
+        StateHasChanged();
+    }
+
+    public async void RunBatchAsync()
+    {
+        Paused = false;
+        DateTime startTime = DateTime.Now;
+        while (!Paused && Batch.CompletedGames.Count < Batch.NumberOfGames)
+        {
+            Batch.Next();
+            Console.WriteLine($"In RunBatchAsync with Winner.Name = {Batch.CurrentGame?.Winner?.Name}");
+            StateHasChanged();
+            if (Visualize)
+            {
+                await Task.Delay(100);
+            }
+            else if(DateTime.Now - startTime > TimeSpan.FromSeconds(0.1))
+            {
+                await Task.Delay(1);
+            }
+        }
+    }
+
+    }
