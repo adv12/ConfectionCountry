@@ -16,7 +16,7 @@ namespace ConfectionCountry
 
         public List<Game> CompletedGames { get; } = new List<Game>();
 
-        public bool Complete => CompletedGames.Count == NumberOfGames;
+        public bool Complete => CompletedGames.Count >= NumberOfGames;
 
         private int[] _winCounts = new int[] { 0, 0, 0, 0 };
 

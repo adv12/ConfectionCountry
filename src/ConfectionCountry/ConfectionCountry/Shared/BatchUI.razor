@@ -3,39 +3,59 @@ Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
 See license.txt in the ConfectionCountry distribution or repository for the
 full text of the license.
 -->
+@{ 
+    double percentComplete = ((double)Batch.CompletedGames.Count) / Batch.NumberOfGames * 100;
+}
 <div class="topRowContainer">
     <div class="topRow formGroup">
         <div class="topRowItem singleLine">
-            <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="@((e) => HandleInput(e))"
-                   class="form-control" required="required" /> Games
-
+            @if (Batch.Complete || Paused)
+            {
+                <button type="button" class="btn btn-primary" @onclick="@NewGame">@(Batch.Complete ? "New Game" : "Cancel")</button>
+            }
+            else
+            {
+                <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="@((e) => HandleInput(e))"
+                       class="form-control" required="required" /><text> X</text>
+            }
             <label for="visualizeCheckbox">
                 <input type="checkbox" id="visualizeCheckbox" @bind="@Visualize" /> Visualize
             </label>
         </div>
         <div class="topRowItem">
-            @if (Batch.CurrentGame == null || Paused)
+            @if (Batch.CurrentGame == null || (Paused && !Batch.Complete))
             {
-                <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync" disabled="@(Batch.NumberOfGames == 0)">Run Batch</button>
+                <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync"
+                        disabled="@(Batch.NumberOfGames == 0)">@(Batch.CurrentGame == null ? "Run Batch" : "Resume")</button>
             }
-            else if (Batch.CompletedGames.Count != Batch.NumberOfGames)
+            else if (!Batch.Complete)
             {
                 <button type="button" class="btn btn-primary" @onclick="@Pause">Pause</button>
             }
-            else if (ShowingStats)
+            else if (Visualize)
             {
-                <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Show Board</button>
-            }
-            else
-            {
-                <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Show Stats</button>
+                if (ShowingStats)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Show Board</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Show Stats</button>
+                }
             }
         </div>
     </div>
 </div>
+<DefaultWidthBlock OuterClass="topMargin">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: @(percentComplete)%" aria-valuenow="@(percentComplete)" aria-valuemin="0" aria-valuemax="100">
+            @(Math.Round(percentComplete))% (# Completed: @(Batch.CompletedGames.Count))
+        </div>
+    </div>
+</DefaultWidthBlock>
     @if (Visualize && Batch.CurrentGame != null && !ShowingStats)
     {
-        <GameUI Game="@Batch.CurrentGame" ReadOnly="@true" />
+        <GameUI Game="@Batch.CurrentGame" Class="topMargin" ReadOnly="@true" />
     }
     else if (Batch.Complete && (!Visualize || ShowingStats))
     {
@@ -60,7 +80,7 @@ full text of the license.
 
     public bool Visualize { get; set; } = true;
 
-    public bool Paused { get; set; } = true;
+    public bool Paused { get; set; } = false;
 
     public bool ShowingStats { get; set; } = false;
 
@@ -94,6 +114,11 @@ full text of the license.
                 await Task.Delay(1);
             }
         }
+    }
+
+    public void NewGame()
+    {
+        OnReset.InvokeAsync(null);
     }
 
     }

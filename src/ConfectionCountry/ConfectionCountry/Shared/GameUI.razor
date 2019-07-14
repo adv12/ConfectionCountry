@@ -19,7 +19,7 @@ full text of the license.
     Pass pass;
 }
 
-<div class="gameUI">
+<div class="gameUI @(Class ?? "")">
     <div class="topRowContainer">
         <div class="topRow">
             @if (_animating || !Game.GameOver)
@@ -135,6 +135,8 @@ full text of the license.
     [Parameter] bool ReadOnly { get; set; }
 
     [Parameter] EventCallback OnReset { get; set; }
+
+    [Parameter] string Class { get; set; }
 
     bool AutoPlay { get; set; }
 
