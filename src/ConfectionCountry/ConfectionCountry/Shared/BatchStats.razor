@@ -1,8 +1,13 @@
+<!--
+Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
+See license.txt in the ConfectionCountry distribution or repository for the
+full text of the license.
+-->
 <div class="batchStats">
     @if (Batch.CurrentGame != null)
     {
-        <div>@(Batch.NumberOfGames) Games Played</div>
-        <table>
+        <div class="topMargin">@(Batch.NumberOfGames) Games Played</div>
+        <table class="topMargin">
             <tr>
                 <th>Player</th>
                 <th>Games Won</th>
@@ -15,7 +20,7 @@
                 <tr>
                     <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name)</strong></div></td>
                     <td>@(winCount)</td>
-                    <td>@(((double)winCount) / Batch.NumberOfGames)</td>
+                    <td>@(((double)winCount) / Batch.NumberOfGames * 100)</td>
                 </tr>
             }
         </table>

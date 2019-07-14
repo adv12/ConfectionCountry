@@ -282,6 +282,23 @@ h1 {
     border: 2px solid white;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #d6d6d6;
+}
+
+th {
+    background-color: #e6e6e6;
+}
+
+td {
+    border-top: 1px solid #d6d6d6;
+}
+
 .red {
     background-color: var(--red);
     color: white;

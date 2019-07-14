@@ -2,10 +2,7 @@
 // See license.txt in the CollectionCountry distribution or repository for the
 // full text of the license.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ConfectionCountry
 {
@@ -45,7 +42,7 @@ namespace ConfectionCountry
             {
                 return 0;
             }
-            return _winCounts[CurrentGame.Players.IndexOf(CurrentGame.Winner)];
+            return _winCounts[CurrentGame.Players.IndexOf(p)];
         }
 
     }

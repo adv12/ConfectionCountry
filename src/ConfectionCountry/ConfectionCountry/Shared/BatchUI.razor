@@ -7,28 +7,32 @@ full text of the license.
     <div class="topRow formGroup">
         <div class="topRowItem singleLine">
             <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="@((e) => HandleInput(e))"
-                   class="form-control" required="required" /> Games (@Batch.CompletedGames.Count complete)
-            </div>
-            <div class="topRowItem">
-                @if (Batch.CurrentGame == null || Paused)
-                {
-                    <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync" disabled="@(Batch.NumberOfGames == 0)">Run Batch</button>
-                }
-                else if (Batch.CompletedGames.Count != Batch.NumberOfGames)
-                {
-                    <button type="button" class="btn btn-primary" @onclick="@Pause">Pause</button>
-                }
-                else if (ShowingStats)
-                {
-                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Show Board</button>
-                }
-                else
-                {
-                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Show Stats</button>
-                }
-            </div>
+                   class="form-control" required="required" /> Games
+
+            <label for="visualizeCheckbox">
+                <input type="checkbox" id="visualizeCheckbox" @bind="@Visualize" /> Visualize
+            </label>
+        </div>
+        <div class="topRowItem">
+            @if (Batch.CurrentGame == null || Paused)
+            {
+                <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync" disabled="@(Batch.NumberOfGames == 0)">Run Batch</button>
+            }
+            else if (Batch.CompletedGames.Count != Batch.NumberOfGames)
+            {
+                <button type="button" class="btn btn-primary" @onclick="@Pause">Pause</button>
+            }
+            else if (ShowingStats)
+            {
+                <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Show Board</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Show Stats</button>
+            }
         </div>
     </div>
+</div>
     @if (Visualize && Batch.CurrentGame != null && !ShowingStats)
     {
         <GameUI Game="@Batch.CurrentGame" ReadOnly="@true" />
