@@ -29,7 +29,7 @@ full text of the license.
             <tr>
                 <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name) (P@(order))</strong></div></td>
                 <td>@(winCount)</td>
-                <td>@(((double)winCount) / Batch.NumberOfGames * 100)</td>
+                <td>@((((double)winCount) / Batch.NumberOfGames * 100).ToString("F2"))</td>
             </tr>
         }
     </table>
