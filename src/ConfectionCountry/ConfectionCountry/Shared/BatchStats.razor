@@ -27,7 +27,7 @@ full text of the license.
             int winCount = winCounts[i];
             int order = Batch.TemplateGame.Players.IndexOf(player) + 1;
             <tr>
-                <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name) (@(order))</strong></div></td>
+                <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name) (P@(order))</strong></div></td>
                 <td>@(winCount)</td>
                 <td>@(((double)winCount) / Batch.NumberOfGames * 100)</td>
             </tr>
