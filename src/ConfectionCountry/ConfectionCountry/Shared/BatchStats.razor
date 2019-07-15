@@ -6,23 +6,33 @@ full text of the license.
 <div class="batchStats">
     @if (Batch.CurrentGame != null)
     {
-        <table class="topMargin">
-            <tr>
-                <th>Player</th>
-                <th>Games Won</th>
-                <th>%</th>
-            </tr>
-            @for (int i = 0; i < Batch.TemplateGame.Players.Count; i++)
+    <table class="topMargin">
+        <tr>
+            <th>Player</th>
+            <th>Games Won</th>
+            <th>%</th>
+        </tr>
+        @{
+            Player[] players = Batch.TemplateGame.Players.ToArray();
+            int[] winCounts = new int[players.Length];
+            for (int i = 0; i < players.Length; i++)
             {
-                Player player = Batch.TemplateGame.Players[i];
-                int winCount = Batch.GetWinCount(player);
-                <tr>
-                    <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name)</strong></div></td>
-                    <td>@(winCount)</td>
-                    <td>@(((double)winCount) / Batch.NumberOfGames * 100)</td>
-                </tr>
+                winCounts[i] = Batch.GetWinCount(players[i]);
             }
-        </table>
+            Array.Sort(winCounts, players);
+        }
+        @for (int i = players.Length - 1; i >= 0; i--)
+        {
+            Player player = players[i];
+            int winCount = winCounts[i];
+            int order = Batch.TemplateGame.Players.IndexOf(player) + 1;
+            <tr>
+                <td><div class="playerLabel @(Util.GetBootstrapClasses(player.Color))"><strong>@(player.Name) (@(order))</strong></div></td>
+                <td>@(winCount)</td>
+                <td>@(((double)winCount) / Batch.NumberOfGames * 100)</td>
+            </tr>
+        }
+    </table>
     }
 </div>
 
