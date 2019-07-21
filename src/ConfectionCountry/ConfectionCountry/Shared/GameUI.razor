@@ -108,22 +108,21 @@ full text of the license.
                 <CardPile OnClick="@NextAsync" ButtonId="deck"><div id="drawButtonText">Draw Card</div></CardPile>
             }
 
-            <CardPile ButtonId="discardPile">
-                @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
+        <CardPile ButtonId="discardPile">
+            @if (Game.CurrentTurn != null && !Game.CurrentTurn.Missed)
+            {
+                Card card = Game.CurrentTurn.Card;
+                <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
+                if (card.IsDouble)
                 {
-                    Card card = Game.CurrentTurn.Card;
-                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble">
-                        @if (!Util.IsColor(card.Type))
-                        {
-                            @Util.GetNameWithSpaces(card.Type);
-                        }
-                    </CardSquare>
-                    if (card.IsDouble)
-                    {
-                        <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
-                    }
+                    <CardSquare Type="@card.Type" IsDouble="@card.IsDouble" />
                 }
-            </CardPile>
+                @if (!Util.IsColor(card.Type))
+                {
+                    <CardName>@Util.GetNameWithSpaces(card.Type)</CardName>
+                }
+            }
+        </CardPile>
         </div>
     }
     </div>

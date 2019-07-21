@@ -7,7 +7,7 @@ full text of the license.
         <div class="defaultWidth">
             <h3>Game Setup</h3>
             Enter the player names and colors.  The youngest player should be entered first.
-            <form class="setupGrid formGroup @(Game.Players.Count < 3 ? "canDelete" : "")">
+            <form class="setupGrid formGroup @(Game.Players.Count > 2 ? "canDelete" : "")">
                 @{ int i = 1; }
                 @foreach (Player p in Game.Players)
                 {

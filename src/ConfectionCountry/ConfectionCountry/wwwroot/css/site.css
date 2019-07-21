@@ -1,4 +1,9 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿/*
+Copyright (c) 2019 Andrew Vardeman.  Published under the MIT license.
+See license.txt in the CollectionCountry distribution or repository for the
+full text of the license.
+*/
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 :root {
     --default-ui-width: 432px;
@@ -61,8 +66,12 @@ h1 {
     grid-template-columns: max-content max-content max-content;
 }
 
-    .setupGrid.canDelete .removePlayerButton {
+    .removePlayerButton {
         visibility: hidden;
+    }
+
+    .setupGrid.canDelete .removePlayerButton {
+        visibility: visible;
     }
 
 .buttonStack {
@@ -254,6 +263,27 @@ h1 {
     font-size: large;
     font-weight: bold;
     padding: 4px;
+}
+
+.cardNameContainer {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardName {
+    flex: none;
+    max-width: 100%;
+    padding: 4px;
+    border: 1px solid var(--pink);
+    border-radius: 5px;
+    background-color: white;
 }
 
 #drawButtonText {
