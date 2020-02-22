@@ -7,14 +7,14 @@ full text of the license.
 
 <div class="cardPileContainerContainer">
     <div class="cardPileContainer">
-        <button id="@ButtonId" @onclick="@HandleClick" class="cardPile btn btn-outline-primary">@ChildContent</button>
+        <button id="@ButtonId" @onclick="HandleClick" class="cardPile btn btn-outline-primary">@ChildContent</button>
     </div>
 </div>
 
 @code {
-[Parameter] string ButtonId { get; set; }
-[Parameter] EventCallback OnClick { get; set; }
-[Parameter] RenderFragment ChildContent { get; set; }
+[Parameter] public string ButtonId { get; set; }
+[Parameter] public EventCallback OnClick { get; set; }
+[Parameter] public RenderFragment ChildContent { get; set; }
 
 public void HandleClick()
 {

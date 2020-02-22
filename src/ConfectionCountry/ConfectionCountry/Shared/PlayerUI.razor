@@ -6,7 +6,7 @@
 </div>
 
 @code {
-    [Parameter] Game Game { get; set; }
-    [Parameter] int PlayerIndex { get; set; }
+    [Parameter] public Game Game { get; set; }
+    [Parameter] public int PlayerIndex { get; set; }
     bool Exists => PlayerIndex < Game.Players.Count;
 }

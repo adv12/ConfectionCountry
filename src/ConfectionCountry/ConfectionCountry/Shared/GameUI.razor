@@ -129,13 +129,13 @@ full text of the license.
 
 @code {
 
-    [Parameter] Game Game { get; set; }
+    [Parameter] public Game Game { get; set; }
 
-    [Parameter] bool ReadOnly { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
 
-    [Parameter] EventCallback OnReset { get; set; }
+    [Parameter] public EventCallback OnReset { get; set; }
 
-    [Parameter] string Class { get; set; }
+    [Parameter] public string Class { get; set; }
 
     bool AutoPlay { get; set; }
 

@@ -2,7 +2,7 @@
     <div class="defaultWidth @(InnerClass ?? "")">@ChildContent</div>
 </div>
 @code {
-[Parameter] RenderFragment ChildContent { get; set; }
-[Parameter] string OuterClass { get; set; }
-[Parameter] string InnerClass { get; set; }
+[Parameter] public RenderFragment ChildContent { get; set; }
+[Parameter] public string OuterClass { get; set; }
+[Parameter] public string InnerClass { get; set; }
 }

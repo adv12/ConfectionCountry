@@ -11,11 +11,11 @@ full text of the license.
         <div class="topRowItem singleLine">
             @if (Batch.Complete || Paused)
             {
-                <button type="button" class="btn btn-primary" @onclick="@NewGame">@(Batch.Complete ? "New Game" : "Cancel")</button>
+                <button type="button" class="btn btn-primary" @onclick="NewGame">@(Batch.Complete ? "New Game" : "Cancel")</button>
             }
             else
             {
-                <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="@((e) => HandleInput(e))"
+                <input type="text" size="6" value="@Batch.NumberOfGames" @oninput="(e) => HandleInput(e)"
                        class="form-control" required="required" /><text> X</text>
             }
             <label for="visualizeCheckbox">
@@ -25,22 +25,22 @@ full text of the license.
         <div class="topRowItem">
             @if (Batch.CurrentGame == null || (Paused && !Batch.Complete))
             {
-                <button type="button" class="btn btn-primary" @onclick="@RunBatchAsync"
+                <button type="button" class="btn btn-primary" @onclick="RunBatchAsync"
                         disabled="@(Batch.NumberOfGames == 0)">@(Batch.CurrentGame == null ? "Run Batch" : "Resume")</button>
             }
             else if (!Batch.Complete)
             {
-                <button type="button" class="btn btn-primary" @onclick="@Pause">Pause</button>
+                <button type="button" class="btn btn-primary" @onclick="Pause">Pause</button>
             }
             else if (Visualize)
             {
                 if (ShowingStats)
                 {
-                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = false)">Board</button>
+                    <button type="button" class="btn btn-primary" @onclick="() => ShowingStats = false">Board</button>
                 }
                 else
                 {
-                    <button type="button" class="btn btn-primary" @onclick="@(() => ShowingStats = true)">Stats</button>
+                    <button type="button" class="btn btn-primary" @onclick="() => ShowingStats = true">Stats</button>
                 }
             }
         </div>
@@ -89,7 +89,7 @@ full text of the license.
         Paused = true;
     }
 
-    public void HandleInput(UIChangeEventArgs e)
+    public void HandleInput(ChangeEventArgs e)
     {
         bool success = int.TryParse((string)e.Value, out int number);
         Batch.NumberOfGames = (success && number > 0) ? number: 1;
